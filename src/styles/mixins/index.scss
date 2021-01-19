@@ -1,0 +1,31 @@
+@mixin size($width, $height) {
+    width: $width;
+    min-width: $width;
+    height: $height;
+}
+
+@mixin border($width, $color, $style: solid) {
+    border: {
+        width: $width;
+        color: $color;
+        style: $style;
+    }
+}
+
+@mixin font($size, $color) {
+    font-size: $size;
+    color: $color;
+}
+
+@mixin single-line-ellipsis{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+@mixin multiline-line-ellipsis($line) {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: $line;
+    overflow: hidden;
+}

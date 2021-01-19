@@ -1,0 +1,98 @@
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    box-sizing: border-box;
+}
+
+*:before,
+*:after {
+    box-sizing: border-box;
+}
+
+html {
+    font-family: sans-serif; /* 1 */
+    line-height: 1.15; /* 2 */
+    -ms-text-size-adjust: 100%; /* 3 */
+}
+
+html,
+body {
+    height: 100%;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    -webkit-font-smoothing: antialiased; /*CSS3新属性，减少字体放大时的巨齿形状*/
+    background-color: #fff;
+    color: #666;
+}
+
+/* HTML5 display-role reset for older browsers */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+    display: block;
+}
+
+em,
+i {
+    font-style: normal;
+}
+
+ol,
+ul {
+    list-style: none;
+}
+
+/*解决图片下面空白缝隙以及去除边框bug*/
+img {
+    border: 0;
+    vertical-align: middle;
+}
+
+/*所有按钮指针样式为pointer*/
+button {
+    cursor: pointer;
+}
+
+/*链接下面没有下划线*/
+a {
+    color: #666;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #409eff;
+}
+
+button,
+input,
+select,
+textarea {
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+/*浮动布局，清除浮动*/
+.clearfix:after {
+    visibility: hidden;
+    clear: both;
+    display: block;
+    content: ".";
+    height: 0;
+}
+/*也是清除浮动，只不过是IE浏览器的清除浮动*/
+.clearfix {
+    *zoom: 1;
+}
