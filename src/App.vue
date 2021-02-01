@@ -3,7 +3,7 @@
 </template>
 
 <style lang="scss">
-
+@import '~@/styles/common/iconfont/iconfont.css';
 #app {
     width: 100%;
     height: 100%;

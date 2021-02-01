@@ -44,6 +44,11 @@ section {
     display: block;
 }
 
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
 em,
 i {
     font-style: normal;
@@ -67,12 +72,19 @@ button {
 
 /*链接下面没有下划线*/
 a {
-    color: #666;
     text-decoration: none;
 }
 
 a:hover {
-    color: #409eff;
+    text-decoration: none;
+}
+
+sup {
+    vertical-align: text-top;
+}
+
+sub {
+    vertical-align: text-bottom;
 }
 
 button,

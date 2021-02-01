@@ -1,7 +1,7 @@
 <template>
-    <div class="layout-container row-flex row-flex-start row-flex-top">
-        <Sidebar />
-        <div class="main-box">
+    <div class="app-wrapper row-flex row-flex-start row-flex-top">
+        <Sidebar class="sidebar-container" />
+        <div class="main-container">
             <Navbar />
             <AppMain />
         </div>
@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent } from "vue";
 import { Sidebar, Navbar, AppMain } from "./components/index";
 
 export default defineComponent({
@@ -21,12 +21,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.layout-container {
-    height: 100%;
-    width: 100%;
-    .main-box {
-        flex: 1;
-        height: 100%;
-    }
-}
+@import './index';
+
 </style>

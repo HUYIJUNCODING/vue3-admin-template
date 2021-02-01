@@ -3,6 +3,7 @@
     "target": "es5",
     "module": "esnext",
     "strict": true,
+    "strictNullChecks": false,//对 null 类型检查，设置为 false 就不会报错了(null,undefined作为子类型可以赋值给其他类型)
     "jsx": "preserve",
     "importHelpers": true,
     "moduleResolution": "node",

@@ -1,0 +1,22 @@
+.app-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    .main-container {
+        position: relative;
+        flex: 1;
+        border-left: 1px solid #f2f2f2;
+        padding-top: 50px;
+    }
+    .app-main {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 50px;
+        bottom: 0;
+        background: #f7f7f7;
+        overflow-x: hidden;
+        overflow-y: auto;
+        padding: 15px;
+    }
+}
