@@ -44,7 +44,8 @@
                 <!--bot-->
                 <div class="bot-menu">
                     <template
-                        v-for="(item, index) in $store.state.firstRouters.supMenu"
+                        v-for="(item, index) in $store.state.firstRouters
+                            .supMenu"
                         :key="index"
                     >
                         <el-menu-item :index="item.index">
@@ -268,7 +269,6 @@ export default defineComponent({
     }
 
     /*一级菜单*/
-
     .app-first-sidebar {
         position: relative;
         height: 100%;
@@ -288,6 +288,7 @@ export default defineComponent({
             margin-bottom: 10px;
             display: flex;
             align-items: center;
+            
             &.is-active {
                 background: #3d8eff !important;
                 color: #fff !important;
@@ -296,146 +297,112 @@ export default defineComponent({
                 background: #434e6c;
                 color: #fff;
             }
+            > span {
+                margin-left: 4px;
+            }
+        }
+
+        .bot-menu {
+            margin-top: 50px;
         }
     }
 
-    .app-first-sidebar .bot-menu {
-        
-        margin-top: 50px;
-    }
-
-    .app-first-sidebar .avatar-container {
-        position: fixed;
-        bottom: 15px;
-        color: #e5e5e5;
-        padding: 10px 0;
-        width: 130px;
-        word-break: break-all;
-        background: rgba(0, 0, 0, 0.6);
-        z-index: 100;
-        cursor: pointer;
-    }
-
-    .app-first-sidebar .user-name {
-        width: 100%;
-        display: block;
-        font-size: 12px;
-        line-height: 30px;
-        padding: 0 12px;
-        text-align: center;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        overflow: hidden;
-    }
-
-    .app-first-sidebar .el-dropdown-menu li {
-        font-size: 12px !important;
-    }
-
     /*二级菜单*/
-
     .app-second-sidebar {
         width: 120px;
         height: 100%;
         transition: all 0.28s;
         overflow: hidden;
-    }
 
-    .app-second-sidebar.no-item {
-        width: 0;
-    }
+        &.no-item {
+            width: 0;
+            .menu-title {
+                opacity: 0;
+            }
+        }
 
-    .app-second-sidebar .menu-title {
-        color: #999;
-        height: 50px;
-        line-height: 50px;
-        font-size: 14px;
-        border-bottom: 1px solid #f2f2f2;
-        border-right: 1px solid #f2f2f2;
-        position: relative;
-        z-index: 10;
-        white-space: nowrap;
-        overflow: hidden;
-        text-align: center;
-    }
+        .menu-title {
+            color: #999;
+            height: 50px;
+            line-height: 50px;
+            font-size: 14px;
+            border-bottom: 1px solid #f2f2f2;
+            border-right: 1px solid #f2f2f2;
+            position: relative;
+            z-index: 10;
+            white-space: nowrap;
+            overflow: hidden;
+            text-align: center;
+        }
 
-    .app-second-sidebar.no-item .menu-title {
-        opacity: 0;
-    }
+        .el-menu {
+            padding: 12px 10px;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            border-right: none;
+            overflow: auto;
+            height: calc(100% - 50px);
+            height: -webkit-calc(100% - 50px);
 
-    .app-second-sidebar .el-menu {
-        padding: 12px 10px;
-        -webkit-box-sizing: border-box;
-        box-sizing: border-box;
-        border-right: none;
-        overflow: auto;
-        height: calc(100% - 50px);
-        height: -webkit-calc(100% - 50px);
-    }
+            > li {
+                height: 30px;
+                line-height: 30px;
+                font-size: 14px;
+                padding: 0 10px;
+                color: #666;
+                display: block;
+                cursor: pointer;
+                margin-bottom: 10px;
+                overflow: hidden;
 
-    .app-second-sidebar li {
-        height: 30px;
-        line-height: 30px;
-        font-size: 14px;
-        padding: 0 10px !important;
-        color: #666;
-        display: block;
-        cursor: pointer;
-        margin-bottom: 10px;
-        overflow: hidden;
-    }
+                &:hover {
+                    background: #ebf3ff;
+                }
 
-    .app-second-sidebar li.disabled {
-        color: #ccc;
-        font-size: 13px;
-        position: relative;
-        height: 35px;
-        cursor: default;
-        /*margin-bottom: 15px;*/
-    }
+                &.is-active {
+                    background: #ebf3ff;
+                    color: #3d8eff;
+                }
 
-    .app-second-sidebar li.disabled:after {
-        content: "";
-        position: absolute;
-        height: 1px;
-        left: 0;
-        right: 0;
-        background: #f2f2f2;
-        bottom: 0;
-    }
+                &.disabled {
+                    color: #ccc;
+                    font-size: 13px;
+                    position: relative;
+                    height: 35px;
+                    cursor: default;
 
-    li span {
-        white-space: nowrap;
-        overflow: hidden;
-        margin-left: 4px;
-        /*/transition: all 0.28s;*/
-    }
+                    &:first-child {
+                        margin-top: 0;
+                    }
 
-    li span.second-title {
-        width: 100%;
-        display: block;
-        text-align: center;
-    }
+                    &:hover {
+                        background: transparent;
+                    }
 
-    .app-second-sidebar li:hover {
-        background: #ebf3ff !important;
-    }
+                    &:after {
+                        content: "";
+                        position: absolute;
+                        height: 1px;
+                        left: 0;
+                        right: 0;
+                        background: #f2f2f2;
+                        bottom: 0;
+                    }
 
-    .app-second-sidebar li.disabled:hover {
-        background: transparent !important;
-    }
+                    .is-divide {
+                        margin-top: 25px;
+                    }
+                }
 
-    .app-second-sidebar li.is-active {
-        background: #ebf3ff !important;
-        color: #3d8eff;
-    }
-
-    .app-second-sidebar li.disabled:first-child {
-        margin-top: 0;
-    }
-
-    .is-divide {
-        margin-top: 25px;
+                .second-title {
+                    width: 100%;
+                    display: block;
+                    text-align: center;
+                    white-space: nowrap;
+                    overflow: hidden;
+                }
+            }
+        }
     }
 }
 </style>
