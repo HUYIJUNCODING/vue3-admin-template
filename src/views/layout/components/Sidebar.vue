@@ -11,31 +11,21 @@
                 active-text-color="#fff"
                 @select="handleSelect"
             >
-                <img class=" logo" src="../../../assets/logo.jpg" alt="" />
+                <img class="logo" src="../../../assets/logo.jpg" alt="" />
                 <template
-                    v-for="(item, index) in $store.state.firstRouters.subMenu"
+                    v-for="(item, index) in firstRouters.subMenu"
                     :key="index"
                 >
                     <el-menu-item :index="item.index">
                         <i
-                            class="iconfont iconfont-active"
-                            :class="
-                                item.noAuth
-                                    ? `${item.icon} no-auth`
-                                    : `${item.icon}`
-                            "
-                            v-if="activeIndex == item.index"
-                        ></i>
-                        <i
                             class="iconfont"
-                            :class="
-                                item.noAuth
-                                    ? `${item.icon} no-auth`
-                                    : `${item.icon}`
-                            "
-                            v-else
+                            :class="[
+                                `${item.icon}`,
+                                item.noAuth && 'no-auth',
+                                activeIndex === item.index && 'iconfont-active'
+                            ]"
                         ></i>
-                        <span :class="{ 'no-auth': item.noAuth }">{{
+                        <span :class="'no-auth' && item.noAuth">{{
                             item.title
                         }}</span>
                     </el-menu-item>
@@ -44,30 +34,20 @@
                 <!--bot-->
                 <div class="bot-menu">
                     <template
-                        v-for="(item, index) in $store.state.firstRouters
-                            .supMenu"
+                        v-for="(item, index) in firstRouters.supMenu"
                         :key="index"
                     >
                         <el-menu-item :index="item.index">
                             <i
-                                class="iconfont iconfont-active"
-                                :class="
-                                    item.noAuth
-                                        ? `${item.icon} no-auth`
-                                        : `${item.icon}`
-                                "
-                                v-if="activeIndex == item.index"
-                            ></i>
-                            <i
                                 class="iconfont"
-                                :class="
-                                    item.noAuth
-                                        ? `${item.icon} no-auth`
-                                        : `${item.icon}`
-                                "
-                                v-else
+                                :class="[
+                                    `${item.icon}`,
+                                    item.noAuth && 'no-auth',
+                                    activeIndex === item.index &&
+                                        'iconfont-active'
+                                ]"
                             ></i>
-                            <span :class="{ 'no-auth': item.noAuth }">{{
+                            <span :class="'no-auth' && item.noAuth">{{
                                 item.title
                             }}</span>
                         </el-menu-item>
@@ -76,22 +56,20 @@
             </el-menu>
         </div>
         <!--二级-->
-        <div
-            class="app-second-sidebar"
-            :class="{ 'no-item': routerList && !routerList.length }"
-        >
+        <div class="app-second-sidebar" :class="{ 'no-item': !routerList }">
             <div class="menu-title">{{ activeTitle }}</div>
             <ul class="el-menu">
-                <template v-for="(item, index) in routerList" :key="index">
+                <template v-if="routerList">
                     <li
-                        class="el-menu-item custom-item"
-                        :data-link="`/${activeIndex}/${item.index}`"
+                        v-for="(item, index) in routerList"
+                        :key="index"
+                        class="el-menu-item"
                         :class="{
                             'is-active':
-                                currentUrl == `/${activeIndex}/${item.index}`,
+                                currentUrl === `/${activeIndex}/${item.index}`,
                             'is-divide': item.divide,
                             disabled: item.disabled,
-                            'no-auth': item.noAuth
+                            'no-auth': item.auth
                         }"
                         @click="toLink($event, item)"
                     >
@@ -110,7 +88,6 @@ import { defineComponent } from "vue";
 export default defineComponent({
     data() {
         return {
-            // active index
             activeIndex: "index",
             currentUrl: ""
         };
@@ -121,41 +98,33 @@ export default defineComponent({
         }
     },
     computed: {
-        ...mapGetters([
-            "name",
-            "firstRouters",
-            "secondRouters",
-            "thirdRouters"
-        ]),
+        ...mapGetters(["firstRouters", "secondRouters", "thirdRouters"]),
         activeTitle() {
-            const filterMenu = this.$store.state.firstRouters.subMenu.filter(
-                item => item.index == this.activeIndex
+            const filterMenu = this.firstRouters.subMenu.filter(
+                item => item.index === this.activeIndex
             );
             //确认标题
-            if (filterMenu.length > 0) return filterMenu[0].title;
-            else
-                return this.$store.state.firstRouters.supMenu.filter(
+            if (filterMenu.length > 0) {
+                return filterMenu[0].title;
+            } else
+                return this.firstRouters.supMenu.filter(
                     item => item.index == this.activeIndex
                 )[0].title;
         },
         routerList() {
-            console.log(this.$store.state.firstRouters.subMenu);
-            return this.$store.state.secondRouters[this.activeIndex];
-        },
-        platform() {
-            return this.$store.getters.platform;
+            return this.secondRouters[this.activeIndex];
         }
     },
     methods: {
         handleSelect(index) {
             let itemPath = {};
 
-            for (const key in this.$store.state.firstRouters) {
-                const res = this.$store.state.firstRouters[key].find(
-                    item => item.index == index
+            for (const key in this.firstRouters) {
+                const res = this.firstRouters[key].find(
+                    item => item.index === index
                 );
                 if (res) {
-                    itemPath = res;
+                    itemPath = { ...res };
                     break;
                 }
             }
@@ -166,28 +135,27 @@ export default defineComponent({
             }
 
             this.activeIndex = index;
-            if (index != "index") {
-                setTimeout(() => {
-                    const item = document.querySelector(".custom-item");
-                    const secondIndex = this.$store.state.secondRouters[
-                        index
-                    ].findIndex(
-                        item => !item.disabled && item.noAuth === false
-                    );
 
-                    item &&
-                        this.$router.push(
-                            "/" +
-                                index +
-                                "/" +
-                                this.$store.state.secondRouters[index][
-                                    secondIndex
-                                ].index
-                        );
-                }, 0);
-            } else {
-                this.$router.push("/");
+            //只有一级菜单
+            if (!this.secondRouters[index]) {
+                return this.$router.push(`/${index}`);
             }
+
+            //只有两级菜单
+            const secondIndex = this.secondRouters[index].findIndex(
+                item => !item.disabled && !item.noAuth
+            );
+
+            if (
+                !this.thirdRouters[
+                    `/${index}/${this.secondRouters[index][secondIndex].index}`
+                ]
+            ) {
+                return this.$router.push(`/${index}`);
+            }
+
+            //三级菜单
+            this.$router.push(`/${index}/${this.secondRouters[index][secondIndex].index}`);
         },
         toLink(e, item) {
             if (item.noAuth) {
@@ -195,25 +163,20 @@ export default defineComponent({
                 return;
             }
             const target = e.currentTarget;
-            const link = target.dataset.link;
             if (target.classList.contains("disabled")) return false;
-            this.clearActiveItems();
-            target.classList.add("is-active");
 
-            const third = "/" + this.activeIndex + "/" + item.index;
-            const thirdIndex = this.thirdRouters[third].findIndex(
-                item => item.noAuth === false
+            const secondRoutePath = "/" + this.activeIndex + "/" + item.index;
+            if(!this.thirdRouters[secondRoutePath]) {
+               return this.$router.push(`${secondRoutePath}`);
+    
+            }
+            const thirdIndex = this.thirdRouters[secondRoutePath].findIndex(
+                item => !item.noAuth
             );
 
             this.$router.push(
-                third + "/" + this.thirdRouters[third][thirdIndex].index
+                secondRoutePath + "/" + this.thirdRouters[secondRoutePath][thirdIndex].index
             );
-        },
-        clearActiveItems() {
-            const customItems = document.querySelectorAll(".custom-item");
-            //循环清空选中
-            for (let i = 0; i < customItems.length; i++)
-                customItems[i].classList.remove("is-active");
         },
         updateMenu() {
             const routerArray = this.$route.fullPath.split("/");
@@ -252,6 +215,13 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+.no-auth {
+    opacity: 0.4 !important;
+}
+
+.no-auth.iconfont {
+    color: #90939969;
+}
 .sidebar-container {
     height: 100%;
 
@@ -288,7 +258,7 @@ export default defineComponent({
             margin-bottom: 10px;
             display: flex;
             align-items: center;
-            
+
             &.is-active {
                 background: #3d8eff !important;
                 color: #fff !important;
@@ -329,6 +299,7 @@ export default defineComponent({
             border-bottom: 1px solid #f2f2f2;
             border-right: 1px solid #f2f2f2;
             position: relative;
+            background-color: #fff;
             z-index: 10;
             white-space: nowrap;
             overflow: hidden;

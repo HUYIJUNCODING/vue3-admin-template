@@ -31,11 +31,8 @@ export function filterRouter(
 
     for (const i in routers) {
         const item: Array<any> = routers[i];
-
-        if (i == "index") {
-            newRouter[i] = [];
-        }       
-        const arr: Array<object> = item.map((item) => {
+     
+        const arr: Array<object> = item.map(item => {
             if (!item.disabled) {
                 if (!arrHas(role, item.role)) {
                     item.noAuth = true;

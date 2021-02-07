@@ -13,6 +13,19 @@ const routes = [
         ]
     },
     {
+        path: "/order",
+        name: "order",
+        redirect: "/order/orderCalc",
+        component: () => import("../views/layout/Index.vue"),
+        children: [
+            {
+                path: "orderCalc",
+                name: "orderCalc",
+                component: () => import("../views/order/OrderCalc.vue")
+            }
+        ]
+    },
+    {
         path: "/order/query",
         name: "orderQuery",
         redirect: "/order/query/queryOrder",
@@ -35,6 +48,11 @@ const routes = [
                 path: "verification",
                 name: "verification",
                 component: () => import("../views/order/verify/Verification.vue")
+            },
+            {
+                path: "record",
+                name: "record",
+                component: () => import("../views/order/verify/Record.vue")
             }
         ]
     },

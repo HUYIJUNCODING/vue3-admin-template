@@ -13,14 +13,10 @@ import { defineComponent } from "vue";
 import { Sidebar, Navbar, AppMain } from "./components/index";
 
 export default defineComponent({
-    components: { Sidebar, Navbar, AppMain },
-    setup(props) {
-        return {};
-    }
+    components: { Sidebar, Navbar, AppMain }
 });
 </script>
 
 <style lang="scss" scoped>
 @import './index';
-
 </style>

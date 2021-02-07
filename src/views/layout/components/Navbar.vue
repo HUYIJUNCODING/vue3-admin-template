@@ -1,16 +1,16 @@
 <template>
     <div
         class="app-third-sidebar"
-        :class="{ 'no-item': routerList && !routerList.length }"
+        :class="{ 'no-item': !breadcrumbData && !thirdRouteData }"
     >
         <div class="nav-bar">
-            <div v-if="rourterData" class="router-box">
-                <router-link :to="rourterData.thirdPath">{{
-                    rourterData.thirdTitle
+            <div v-if="breadcrumbData" class="router-box">
+                <router-link :to="breadcrumbData.thirdPath">{{
+                    breadcrumbData.thirdTitle
                 }}</router-link>
                 <span class="router-to"> > </span>
-                <router-link :to="rourterData.fourthPath">{{
-                    rourterData.fourthTitle
+                <router-link :to="breadcrumbData.fourthPath">{{
+                    breadcrumbData.fourthTitle
                 }}</router-link>
             </div>
 
@@ -27,17 +27,18 @@
                         :class="{
                             'is-active':
                                 currentUrl.indexOf(baseUrl + '/' + item.index) >
-                                    -1 ||
-                                currentUrl.indexOf('/market/marketing') > -1,
+                                -1,
                             'no-auth': item.noAuth
                         }"
-                        :data-link="item.index"
-                        @click="handleSelect($event, item)"
+                        @click="handleSelect(item)"
                     >
                         <span>{{ item.title }}</span>
                     </li>
                 </template>
             </ul>
+            <div v-else class="default-nav">
+                <span class="storeName">大王叫我来巡山</span>
+            </div>
         </div>
     </div>
 </template>
@@ -49,84 +50,70 @@ export default {
         return {
             baseUrl: "",
             currentUrl: "",
-            routerList: [],
             storeName: "", //店铺名称
-            rourterData: false
+            breadcrumbData: null,
+            thirdRouteData: null
         };
     },
     computed: {
-        ...mapGetters(["secondRouters", "thirdRouters"]),
-        menuList() {
-            return this.thirdRouters[this.baseUrl];
-        }
+        ...mapGetters(["secondRouters", "thirdRouters"])
     },
     watch: {
         $route(val) {
-            console.log(val, "val");
-            this.toggoleRouter(val);
+            this.toggleRouter(val);
             this.updateMenu();
         }
     },
     methods: {
-        toggoleRouter(val) {
+        toggleRouter(val) {
             const thirdRouters = this.thirdRouters;
             const pathArr = val.path.slice(1).split("/");
-            const secondRouter = "/" + pathArr[0] + "/" + pathArr[1];
-            let thirdData = null;
-            for (const key in thirdRouters) {
-                if (key == secondRouter) thirdData = thirdRouters[key];
-            }
-            if (thirdData) {
-                for (const item in thirdData[0]) {
-                    if (item == pathArr[2]) {
-                        this.rourterData = {
-                            thirdTitle: thirdData[0].title,
-                            thirdPath: secondRouter + "/" + thirdData[0].index,
-                            fourthTitle: thirdData[0][item],
-                            fourthPath: secondRouter + "/" + item
-                        };
-                        return;
-                    }
-                    this.rourterData = false;
+            const secondRoutePath = "/" + pathArr[0] + "/" + pathArr[1];
+
+            this.thirdRouteData = thirdRouters[secondRoutePath] || null;
+
+            if (!this.thirdRouteData) return (this.breadcrumbData = null);
+
+            for (const item in this.thirdRouteData[0]) {
+                if (item === pathArr[2]) {
+                    this.breadcrumbData = {
+                        thirdTitle: this.thirdRouteData[0].title,
+                        thirdPath:
+                            secondRoutePath +
+                            "/" +
+                            this.thirdRouteData[0].index,
+                        fourthTitle: this.thirdRouteData[0][item],
+                        fourthPath: secondRoutePath + "/" + item
+                    };
+                    return;
                 }
-            } else {
-                this.rourterData = false;
+                this.breadcrumbData = null;
             }
         },
-        handleSelect(e, item) {
+        handleSelect(item) {
             if (item.noAuth) {
                 this.$message.error("您暂无该页面访问权限，请联系管理员");
                 return;
             }
-            const target = e.currentTarget,
-                link = target.dataset.link;
-            this.clearActiveItems();
-            target.classList.add("is-active");
-            this.$router.push(this.baseUrl + "/" + link);
+
+            this.$router.push(this.baseUrl + "/" + item.index);
         },
         updateMenu() {
             const routeArray = this.$route.fullPath.split("/");
+
             this.currentUrl = this.$route.fullPath;
             this.baseUrl = "/" + routeArray[1] + "/" + routeArray[2];
-            this.routerList = this.secondRouters[routeArray[1]];
-        },
-        clearActiveItems() {
-            const customItems = document.querySelectorAll(".nav-item");
-            //循环清空选中
-            for (let i = 0; i < customItems.length; i++)
-                customItems[i].classList.remove("is-active");
         }
     },
     created() {
         this.updateMenu();
-        this.toggoleRouter(this.$route);
+        this.toggleRouter(this.$route);
     }
 };
 </script>
 
 <style lang="scss" scoped>
 /*三级路由*/
-
 .app-third-sidebar {
     position: fixed;
     top: 0;
@@ -136,95 +123,61 @@ export default {
     align-items: center;
     border-bottom: 1px solid #f2f2f2;
     background: #fff;
+    opacity: 1;
     transition: all 0.28s;
     z-index: 9;
     user-select: none;
     -webkit-user-select: none;
 
-    .no-item {
-        left: 120px;
+    &.no-item {
+        left: 130px;
     }
 
-    .el-menu {
-        display: flex;
-        align-items: center;
-        border: none;
+    .nav-bar {
+        flex: 1;
+        position: relative;
 
-        & > li {
-            height: 50px;
-            color: #333;
-            line-height: 50px;
-            padding: 0 10px;
-            margin: 0 15px;
-            &:hover {
-                background: #fff !important;
-                color: #3d8eff !important;
-                transition: all 0s;
+        .router-box {
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 14px;
+            cursor: pointer;
+            a {
+                color: #3d8eff;
             }
-            &.is-active {
-                color: #3d8eff !important;
-                border-bottom: 2px solid #3d8eff !important;
+        }
+
+        .el-menu {
+            display: flex;
+            align-items: center;
+            border: none;
+
+            .el-menu-item {
+                height: 50px;
+                color: #333;
+                line-height: 50px;
+                padding: 0 10px;
+                margin: 0 15px;
+
+                &:hover {
+                    background: #fff;
+                    color: #3d8eff;
+                }
+                &.is-active {
+                    color: #3d8eff;
+                    border-bottom: 2px solid #3d8eff;
+                }
             }
         }
     }
+
+    .default-nav {
+        height: 50px;
+    }
+
     .no-auth {
-    opacity: 0.4 !important;
+        opacity: 0.4;
+    }
 }
-}
-
-.app-wrapper
-    .app-third-sidebar
-    .app-wrapper
-    .app-third-sidebar
-    li
-    .app-wrapper
-    .app-third-sidebar
-    li
-    .app-wrapper
-    
-
-.app-wrapper .no-auth.iconfont {
-    color: #90939969;
-}
-.nav-bar {
-    flex: 1;
-    position: relative;
-}
-
-.nav-bar .active-title {
-    height: 50px;
-    color: #3d8eff;
-    line-height: 50px;
-    padding: 0 10px;
-    margin: 0 15px;
-    opacity: 1;
-    font-size: 16px;
-    transition: all 0.28s;
-}
-
-.active-title {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-}
-
-.router-box {
-    height: 50px;
-    display: flex;
-    align-items: center;
-    padding: 0 20px;
-    font-size: 14px;
-    cursor: pointer;
-}
-
-.router-to {
-    margin: 0 8px;
-    color: #999;
-}
-
-.router-box > a {
-    color: #3d8eff;
-}
-
-
 </style>

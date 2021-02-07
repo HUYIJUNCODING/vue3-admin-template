@@ -9,7 +9,6 @@ export const firstRouters: RoutesType = {
             index: "index",
             icon: "icon-dianpu",
             noAuth: false,
-            auth: ["beego"],
             role: ["master"]
         },
         {
@@ -17,7 +16,6 @@ export const firstRouters: RoutesType = {
             index: "order",
             icon: "icon-dingdan",
             noAuth: false,
-            auth: ["beego"],
             role: ["master"]
         }
     ],
@@ -27,35 +25,36 @@ export const firstRouters: RoutesType = {
             index: "setting",
             icon: "icon-shezhi",
             noAuth: false,
-            auth: ["beego"],
             role: ["master"]
         }
     ]
 };
 
 export const secondRouters: RoutesType = {
-    index: [],
     order: [
         {
             title: "订单交易",
             disabled: true,
             divide: true,
             noAuth: false,
-            auth: ["beego"],
             role: ["master"]
         },
         {
             title: "物流订单",
             index: "query",
             noAuth: false,
-            auth: ["beego"],
             role: ["master"]
         },
         {
             title: "自提订单",
             index: "verify",
             noAuth: false,
-            auth: ["beego"],
+            role: ["master"]
+        },
+        {
+            title: "订单统计",
+            index: "orderCalc",
+            noAuth: false,
             role: ["master"]
         }
     ],
@@ -64,8 +63,7 @@ export const secondRouters: RoutesType = {
             title: "订单设置",
             index: "order",
             noAuth: false,
-            auth: ["beego"],
-            role: ["master", "manager", "operator"]
+            role: ["master", "manager", ""]
         }
     ]
 };
@@ -76,7 +74,6 @@ export const thirdRouters: RoutesType = {
             title: "店铺概况",
             index: "index",
             noAuth: false,
-            auth: ["beego"],
             role: ["master"]
         }
     ],
@@ -85,7 +82,6 @@ export const thirdRouters: RoutesType = {
             title: "物流订单",
             index: "queryOrder",
             noAuth: false,
-            auth: ["beego"],
             role: ["master"]
         }
     ],
@@ -95,9 +91,14 @@ export const thirdRouters: RoutesType = {
             title: "自提订单",
             index: "verification",
             noAuth: false,
-            auth: ["beego"],
             role: ["master"]
-        }
+        },
+        {
+			title: "核销纪录",
+			index: "record",
+			noAuth: false,
+			role: ["master"]
+		}
     ],
 
     "/setting/order": [
@@ -105,7 +106,6 @@ export const thirdRouters: RoutesType = {
             title: "订单设置",
             index: "order",
             noAuth: false,
-            auth: ["beego"],
             role: ["master"]
         }
     ]
