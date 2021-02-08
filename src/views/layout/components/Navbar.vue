@@ -36,8 +36,8 @@
                     </li>
                 </template>
             </ul>
-            <div v-else class="default-nav">
-                <span class="storeName">大王叫我来巡山</span>
+            <div v-else class="default-nav row-flex row-flex-start row-flex-middle" :class="pathArr.length === 2 && 'ml'" >
+                <span class="site-name">{{siteTitle}}</span>
             </div>
         </div>
     </div>
@@ -50,7 +50,8 @@ export default {
         return {
             baseUrl: "",
             currentUrl: "",
-            storeName: "", //店铺名称
+            pathArr: [],
+            siteTitle: "大王叫我来巡山", //店铺名称
             breadcrumbData: null,
             thirdRouteData: null
         };
@@ -66,12 +67,11 @@ export default {
     },
     methods: {
         toggleRouter(val) {
-            const thirdRouters = this.thirdRouters;
             const pathArr = val.path.slice(1).split("/");
             const secondRoutePath = "/" + pathArr[0] + "/" + pathArr[1];
 
-            this.thirdRouteData = thirdRouters[secondRoutePath] || null;
-
+            this.thirdRouteData = this.thirdRouters[secondRoutePath] || null;
+            this.pathArr = pathArr;
             if (!this.thirdRouteData) return (this.breadcrumbData = null);
 
             for (const item in this.thirdRouteData[0]) {
@@ -131,6 +131,7 @@ export default {
 
     &.no-item {
         left: 130px;
+        padding-left: 20px;
     }
 
     .nav-bar {
@@ -174,6 +175,10 @@ export default {
 
     .default-nav {
         height: 50px;
+        &.ml {
+            margin-left: 120px;
+        }
+
     }
 
     .no-auth {

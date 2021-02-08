@@ -9,10 +9,6 @@ import NProgress from "nprogress";
 import "nprogress/nprogress.css";
 NProgress.configure({ showSpinner: false });
 
-const whiteList = ["/403", "/404", "/password"];
-
-const toIndexPath = ["/", "/index"];
-
 store.commit("checkRole");
 
 router.beforeEach((to, from, next) => {
@@ -22,6 +18,6 @@ router.beforeEach((to, from, next) => {
     
 });
 
-router.afterEach((to, from, next) => {
+router.afterEach((to, from) => {
     NProgress.done();
 });

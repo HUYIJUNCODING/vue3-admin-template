@@ -16,18 +16,15 @@
                     v-for="(item, index) in firstRouters.subMenu"
                     :key="index"
                 >
-                    <el-menu-item :index="item.index">
+                    <el-menu-item :index="item.index" :disabled="item.noAuth">
                         <i
                             class="iconfont"
                             :class="[
                                 `${item.icon}`,
-                                item.noAuth && 'no-auth',
                                 activeIndex === item.index && 'iconfont-active'
                             ]"
                         ></i>
-                        <span :class="'no-auth' && item.noAuth">{{
-                            item.title
-                        }}</span>
+                        <span>{{ item.title }}</span>
                     </el-menu-item>
                 </template>
 
@@ -37,23 +34,50 @@
                         v-for="(item, index) in firstRouters.supMenu"
                         :key="index"
                     >
-                        <el-menu-item :index="item.index">
+                        <el-menu-item
+                            :index="item.index"
+                            :disabled="item.noAuth"
+                        >
                             <i
                                 class="iconfont"
                                 :class="[
                                     `${item.icon}`,
-                                    item.noAuth && 'no-auth',
                                     activeIndex === item.index &&
                                         'iconfont-active'
                                 ]"
                             ></i>
-                            <span :class="'no-auth' && item.noAuth">{{
-                                item.title
-                            }}</span>
+                            <span>{{ item.title }}</span>
                         </el-menu-item>
                     </template>
                 </div>
             </el-menu>
+            <!--登录信息-->
+            <el-dropdown
+                class="login-box"
+                placement="top"
+                size="medium"
+                @command="handleCommand"
+            >
+                <div class="user-name">{{ username }}</div>
+                <template #dropdown>
+                    <el-dropdown-menu size="medium">
+                        <el-dropdown-item style="font-size: 12px">{{
+                            username
+                        }}</el-dropdown-item>
+                        <el-dropdown-item
+                            command="modify"
+                            :divided="true"
+                            style="font-size: 12px"
+                            >修改密码</el-dropdown-item
+                        >
+                        <el-dropdown-item
+                            command="logout"
+                            style="font-size: 12px"
+                            >退出登录</el-dropdown-item
+                        >
+                    </el-dropdown-menu>
+                </template>
+            </el-dropdown>
         </div>
         <!--二级-->
         <div class="app-second-sidebar" :class="{ 'no-item': !routerList }">
@@ -69,7 +93,7 @@
                                 currentUrl === `/${activeIndex}/${item.index}`,
                             'is-divide': item.divide,
                             disabled: item.disabled,
-                            'no-auth': item.auth
+                            'no-auth': item.noAuth
                         }"
                         @click="toLink($event, item)"
                     >
@@ -89,7 +113,9 @@ export default defineComponent({
     data() {
         return {
             activeIndex: "index",
-            currentUrl: ""
+            currentUrl: "",
+            username: "test",
+            disabled: true
         };
     },
     watch: {
@@ -133,7 +159,6 @@ export default defineComponent({
                 this.$message.error("您暂无该页面访问权限，请联系管理员");
                 return;
             }
-
             this.activeIndex = index;
 
             //只有一级菜单
@@ -155,7 +180,9 @@ export default defineComponent({
             }
 
             //三级菜单
-            this.$router.push(`/${index}/${this.secondRouters[index][secondIndex].index}`);
+            this.$router.push(
+                `/${index}/${this.secondRouters[index][secondIndex].index}`
+            );
         },
         toLink(e, item) {
             if (item.noAuth) {
@@ -166,44 +193,35 @@ export default defineComponent({
             if (target.classList.contains("disabled")) return false;
 
             const secondRoutePath = "/" + this.activeIndex + "/" + item.index;
-            if(!this.thirdRouters[secondRoutePath]) {
-               return this.$router.push(`${secondRoutePath}`);
-    
+            if (!this.thirdRouters[secondRoutePath]) {
+                return this.$router.push(`${secondRoutePath}`);
             }
             const thirdIndex = this.thirdRouters[secondRoutePath].findIndex(
                 item => !item.noAuth
             );
 
             this.$router.push(
-                secondRoutePath + "/" + this.thirdRouters[secondRoutePath][thirdIndex].index
+                secondRoutePath +
+                    "/" +
+                    this.thirdRouters[secondRoutePath][thirdIndex].index
             );
         },
         updateMenu() {
             const routerArray = this.$route.fullPath.split("/");
             this.activeIndex = routerArray[1];
             this.currentUrl = "/" + routerArray[1] + "/" + routerArray[2];
-        }
-        // command(event) {
-        //     switch (event) {
-        //         case "logout":
-        //             clearCookie();
-        //             window.location.href =
-        //                 this.$store.state.domainURL + "shoplist";
-        //             break;
-        //         case "modify":
-        //             window.location.href =
-        //                 this.$store.state.domainURL + "update";
-        //             // this.$router.push('/setting/user/password');
-        //             break;
-        //         case "logoutAdmin":
-        //             logoutClearCookie();
+        },
 
-        //             // return
-        //             window.location.href =
-        //                 this.$store.state.domainURL + "account/login";
-        //             break;
-        //     }
-        // }
+        handleCommand(event) {
+            switch (event) {
+                case "modify":
+                    break;
+                case "logout":
+                    break;
+                default:
+                    break;
+            }
+        }
     },
     mounted() {
         // console.log(store.state.domainURL);
@@ -215,13 +233,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-.no-auth {
-    opacity: 0.4 !important;
-}
-
-.no-auth.iconfont {
-    color: #90939969;
-}
 .sidebar-container {
     height: 100%;
 
@@ -248,6 +259,7 @@ export default defineComponent({
         .el-menu {
             height: 100%;
             width: 130px;
+            border-right: none;
             overflow: auto;
         }
 
@@ -275,6 +287,7 @@ export default defineComponent({
         .bot-menu {
             margin-top: 50px;
         }
+
     }
 
     /*二级菜单*/
@@ -310,7 +323,6 @@ export default defineComponent({
             padding: 12px 10px;
             -webkit-box-sizing: border-box;
             box-sizing: border-box;
-            border-right: none;
             overflow: auto;
             height: calc(100% - 50px);
             height: -webkit-calc(100% - 50px);
@@ -373,6 +385,35 @@ export default defineComponent({
                     overflow: hidden;
                 }
             }
+        }
+
+        .no-auth {
+            opacity: 0.4;
+        }
+    }
+
+    .login-box {
+        position: fixed;
+        left: 0;
+        bottom: 15px;
+        color: #e5e5e5;
+        padding: 10px 0;
+        width: 130px;
+        word-break: break-all;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 100;
+        cursor: pointer;
+
+        .user-name {
+            width: 100%;
+            display: block;
+            font-size: 12px;
+            line-height: 30px;
+            padding: 0 12px;
+            text-align: center;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
         }
     }
 }

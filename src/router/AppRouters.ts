@@ -25,7 +25,7 @@ export const firstRouters: RoutesType = {
             index: "setting",
             icon: "icon-shezhi",
             noAuth: false,
-            role: ["master"]
+            role: ["manager"]
         }
     ]
 };
@@ -43,7 +43,7 @@ export const secondRouters: RoutesType = {
             title: "物流订单",
             index: "query",
             noAuth: false,
-            role: ["master"]
+            role: ["manager"]
         },
         {
             title: "自提订单",
@@ -63,7 +63,7 @@ export const secondRouters: RoutesType = {
             title: "订单设置",
             index: "order",
             noAuth: false,
-            role: ["master", "manager", ""]
+            role: ["master", "manager"]
         }
     ]
 };
