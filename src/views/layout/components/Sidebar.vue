@@ -13,7 +13,7 @@
             >
                 <img class="logo" src="../../../assets/logo.jpg" alt="" />
                 <template
-                    v-for="(item, index) in firstRouters.subMenu"
+                    v-for="(item, index) in $store.getters.firstRouters.subMenu"
                     :key="index"
                 >
                     <el-menu-item :index="item.index" :disabled="item.noAuth">
@@ -31,7 +31,7 @@
                 <!--bot-->
                 <div class="bot-menu">
                     <template
-                        v-for="(item, index) in firstRouters.supMenu"
+                        v-for="(item, index) in $store.getters.firstRouters.supMenu"
                         :key="index"
                     >
                         <el-menu-item
@@ -105,9 +105,9 @@
     </div>
 </template>
 
-<script>
-import { mapGetters } from "vuex";
+<script lang="ts">
 import { defineComponent } from "vue";
+import { RoutesType, RouteMenuType } from "@/router/AppRouters";
 
 export default defineComponent({
     data() {
@@ -124,29 +124,32 @@ export default defineComponent({
         }
     },
     computed: {
-        ...mapGetters(["firstRouters", "secondRouters", "thirdRouters"]),
-        activeTitle() {
-            const filterMenu = this.firstRouters.subMenu.filter(
-                item => item.index === this.activeIndex
+        activeTitle(): string {
+            const filterMenu: Array<RouteMenuType> = this.$store.getters.firstRouters.subMenu.filter(
+                (item: RouteMenuType) => item.index === this.activeIndex
             );
             //确认标题
             if (filterMenu.length > 0) {
                 return filterMenu[0].title;
-            } else
-                return this.firstRouters.supMenu.filter(
-                    item => item.index == this.activeIndex
+            } else {
+                return this.$store.getters.firstRouters.supMenu.filter(
+                    (item: RouteMenuType) => item.index == this.activeIndex
                 )[0].title;
+            }
         },
-        routerList() {
-            return this.secondRouters[this.activeIndex];
+        routerList(): Array<RouteMenuType> {
+            return this.$store.getters.secondRouters[this.activeIndex];
         }
     },
     methods: {
-        handleSelect(index) {
-            let itemPath = {};
+        handleSelect(index: string) {
+            let itemPath: RouteMenuType;
+            const firstRouters: RoutesType = this.$store.getters.firstRouters;
+            const secondRouters: RoutesType = this.$store.getters.secondRouters;
+            const thirdRouters: RoutesType = this.$store.getters.thirdRouters;
 
-            for (const key in this.firstRouters) {
-                const res = this.firstRouters[key].find(
+            for (const key in firstRouters) {
+                const res: RouteMenuType = firstRouters[key].find(
                     item => item.index === index
                 );
                 if (res) {
@@ -162,18 +165,18 @@ export default defineComponent({
             this.activeIndex = index;
 
             //只有一级菜单
-            if (!this.secondRouters[index]) {
+            if (!secondRouters[index]) {
                 return this.$router.push(`/${index}`);
             }
 
             //只有两级菜单
-            const secondIndex = this.secondRouters[index].findIndex(
+            const secondIndex: number = secondRouters[index].findIndex(
                 item => !item.disabled && !item.noAuth
             );
 
             if (
-                !this.thirdRouters[
-                    `/${index}/${this.secondRouters[index][secondIndex].index}`
+                !thirdRouters[
+                    `/${index}/${secondRouters[index][secondIndex].index}`
                 ]
             ) {
                 return this.$router.push(`/${index}`);
@@ -181,10 +184,11 @@ export default defineComponent({
 
             //三级菜单
             this.$router.push(
-                `/${index}/${this.secondRouters[index][secondIndex].index}`
+                `/${index}/${secondRouters[index][secondIndex].index}`
             );
         },
-        toLink(e, item) {
+        toLink(e: any, item: RouteMenuType) {
+            const thirdRouters: RoutesType = this.$store.getters.thirdRouters;
             if (item.noAuth) {
                 this.$message.error("您暂无该页面访问权限，请联系管理员");
                 return;
@@ -192,27 +196,28 @@ export default defineComponent({
             const target = e.currentTarget;
             if (target.classList.contains("disabled")) return false;
 
-            const secondRoutePath = "/" + this.activeIndex + "/" + item.index;
-            if (!this.thirdRouters[secondRoutePath]) {
+            const secondRoutePath: string =
+                "/" + this.activeIndex + "/" + item.index;
+            if (!thirdRouters[secondRoutePath]) {
                 return this.$router.push(`${secondRoutePath}`);
             }
-            const thirdIndex = this.thirdRouters[secondRoutePath].findIndex(
+            const thirdIndex: number = thirdRouters[secondRoutePath].findIndex(
                 item => !item.noAuth
             );
 
             this.$router.push(
                 secondRoutePath +
                     "/" +
-                    this.thirdRouters[secondRoutePath][thirdIndex].index
+                    thirdRouters[secondRoutePath][thirdIndex].index
             );
         },
         updateMenu() {
-            const routerArray = this.$route.fullPath.split("/");
+            const routerArray: string[] = this.$route.fullPath.split("/");
             this.activeIndex = routerArray[1];
             this.currentUrl = "/" + routerArray[1] + "/" + routerArray[2];
         },
 
-        handleCommand(event) {
+        handleCommand(event: string) {
             switch (event) {
                 case "modify":
                     break;
@@ -287,7 +292,6 @@ export default defineComponent({
         .bot-menu {
             margin-top: 50px;
         }
-
     }
 
     /*二级菜单*/

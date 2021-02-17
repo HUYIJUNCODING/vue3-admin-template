@@ -1,11 +1,16 @@
+/* eslint-disable */
+
 //类型声明
+import { InjectionKey } from 'vue'
 import { RoutesType } from "../router/AppRouters";
 
-interface State {
+// define your typings for the store state
+export interface State {
     [index: string]: any;
 }
 
-import { createStore } from "vuex";
+
+import { createStore, createLogger, useStore as baseUseStore,Store } from 'vuex'
 
 import { filterRouter } from "../utils/assist";
 
@@ -15,7 +20,10 @@ import {
     thirdRouters
 } from "../router/AppRouters";
 
-export default createStore({
+// define injection key
+export const key: InjectionKey<Store<State>> = Symbol();
+
+const store: Store<State> = createStore<State>({
     state: {
         //一级路由
         firstRouters,
@@ -25,10 +33,15 @@ export default createStore({
         thirdRouters
     },
     getters: {
-        firstRouters: state => state.firstRouters,
-        secondRouters: state => state.secondRouters,
-        thirdRouters: state => state.thirdRouters,
-        
+        firstRouters(state: State): RoutesType {
+            return state.firstRouters
+        },
+        secondRouters(state: State): RoutesType {
+            return state.secondRouters
+        },
+        thirdRouters(state: State): RoutesType {
+            return state.thirdRouters
+        }
     },
     mutations: {
         checkRole(state: State): void {
@@ -47,5 +60,12 @@ export default createStore({
         }
     },
     actions: {},
-    modules: {}
+    modules: {},
+    plugins:  process.env.NODE_ENV !== 'production' ? [createLogger()]: []
 });
+
+export function useStore () {
+    return baseUseStore(key)
+  }
+
+export default store;

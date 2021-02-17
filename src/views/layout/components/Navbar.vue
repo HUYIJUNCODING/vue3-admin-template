@@ -16,10 +16,15 @@
 
             <ul
                 class="el-menu"
-                v-else-if="thirdRouters && thirdRouters[baseUrl]"
+                v-else-if="
+                    $store.getters.thirdRouters &&
+                        $store.getters.thirdRouters[baseUrl]
+                "
             >
                 <template
-                    v-for="(item, index) in thirdRouters[baseUrl]"
+                    v-for="(item, index) in $store.getters.thirdRouters[
+                        baseUrl
+                    ]"
                     :key="index"
                 >
                     <li
@@ -36,14 +41,19 @@
                     </li>
                 </template>
             </ul>
-            <div v-else class="default-nav row-flex row-flex-start row-flex-middle" :class="pathArr.length === 2 && 'ml'" >
-                <span class="site-name">{{siteTitle}}</span>
+            <div
+                v-else
+                class="default-nav row-flex row-flex-start row-flex-middle"
+                :class="pathArr.length === 2 && 'ml'"
+            >
+                <span class="site-name">{{ siteTitle }}</span>
             </div>
         </div>
     </div>
 </template>
-<script>
-import { mapGetters } from "vuex";
+<script lang="ts">
+import { RouteLocationNormalizedLoaded } from "vue-router";
+import { RoutesType, RouteMenuType } from "@/router/AppRouters";
 
 export default {
     data() {
@@ -56,21 +66,20 @@ export default {
             thirdRouteData: null
         };
     },
-    computed: {
-        ...mapGetters(["secondRouters", "thirdRouters"])
-    },
+    computed: {},
     watch: {
-        $route(val) {
+        $route(val: RouteLocationNormalizedLoaded) {
             this.toggleRouter(val);
             this.updateMenu();
         }
     },
     methods: {
-        toggleRouter(val) {
-            const pathArr = val.path.slice(1).split("/");
-            const secondRoutePath = "/" + pathArr[0] + "/" + pathArr[1];
+        toggleRouter(val: RouteLocationNormalizedLoaded) {
+            const pathArr: string[] = val.path.slice(1).split("/");
+            const secondRoutePath: string = "/" + pathArr[0] + "/" + pathArr[1];
 
-            this.thirdRouteData = this.thirdRouters[secondRoutePath] || null;
+            this.thirdRouteData =
+                this.$store.getters.thirdRouters[secondRoutePath] || null;
             this.pathArr = pathArr;
             if (!this.thirdRouteData) return (this.breadcrumbData = null);
 
@@ -90,7 +99,7 @@ export default {
                 this.breadcrumbData = null;
             }
         },
-        handleSelect(item) {
+        handleSelect(item: RouteMenuType) {
             if (item.noAuth) {
                 this.$message.error("您暂无该页面访问权限，请联系管理员");
                 return;
@@ -99,7 +108,7 @@ export default {
             this.$router.push(this.baseUrl + "/" + item.index);
         },
         updateMenu() {
-            const routeArray = this.$route.fullPath.split("/");
+            const routeArray: string[] = this.$route.fullPath.split("/");
 
             this.currentUrl = this.$route.fullPath;
             this.baseUrl = "/" + routeArray[1] + "/" + routeArray[2];
@@ -178,7 +187,6 @@ export default {
         &.ml {
             margin-left: 120px;
         }
-
     }
 
     .no-auth {

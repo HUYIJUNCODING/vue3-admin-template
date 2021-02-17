@@ -1,5 +1,15 @@
+export type RouteMenuType = {
+    title: string;
+    index?: string;
+    noAuth: boolean;
+    role: string[];
+    icon?: string;
+    disabled?: boolean;
+    divide?: boolean;
+}
+
 export  interface RoutesType {
-    [index: string]: Array<object>;
+    [index: string]: Array<RouteMenuType>;
 }
 
 export const firstRouters: RoutesType = {
