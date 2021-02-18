@@ -52,8 +52,8 @@
     </div>
 </template>
 <script lang="ts">
-import { RouteLocationNormalizedLoaded } from "vue-router";
-import { RoutesType, RouteMenuType } from "@/router/AppRouters";
+import { RouteLocationNormalized } from "vue-router";
+import { RouteMenuType } from "@/router/AppRouters";
 
 export default {
     data() {
@@ -68,13 +68,13 @@ export default {
     },
     computed: {},
     watch: {
-        $route(val: RouteLocationNormalizedLoaded) {
+        $route(val: RouteLocationNormalized) {
             this.toggleRouter(val);
             this.updateMenu();
         }
     },
     methods: {
-        toggleRouter(val: RouteLocationNormalizedLoaded) {
+        toggleRouter(val: RouteLocationNormalized) {
             const pathArr: string[] = val.path.slice(1).split("/");
             const secondRoutePath: string = "/" + pathArr[0] + "/" + pathArr[1];
 

@@ -12,6 +12,25 @@ const routes = [
             }
         ]
     },
+    // {
+    //     path: "/account",
+    //     name: "account",
+    //     component: () => import("../views/account/Index.vue"),
+    //     children: [
+    //         {
+    //             path: "login",
+    //             component: () => import("../views/account/Login.vue")
+    //         },
+    //         {
+    //             path: "register",
+    //             component: () => import("../views/account/Register.vue")
+    //         },
+    //         {
+    //             path: "forget",
+    //             component: () => import("../views/account/Forget.vue")
+    //         }
+    //     ]
+    // },
     {
         path: "/order",
         name: "order",
@@ -47,7 +66,8 @@ const routes = [
             {
                 path: "verification",
                 name: "verification",
-                component: () => import("../views/order/verify/Verification.vue")
+                component: () =>
+                    import("../views/order/verify/Verification.vue")
             },
             {
                 path: "record",
@@ -55,8 +75,7 @@ const routes = [
                 component: () => import("../views/order/verify/Record.vue")
             }
         ]
-    },
-    
+    }
 ];
 
 export default routes;
