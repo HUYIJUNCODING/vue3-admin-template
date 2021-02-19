@@ -9,3 +9,8 @@ declare module "@vue/runtime-core" {
         $message: IMessage;
     }
 }
+
+ declare interface UserInfo {
+    name: string;
+    nickname?: string;
+}

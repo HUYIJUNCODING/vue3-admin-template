@@ -13,13 +13,13 @@
         </div>
         <div class="content">
             <div class="left">
-                <div class="content-header" v-if="!forget">
-                    <div class="login">{{ mainTitle }}</div>
+                <div class="content-header" v-if="!data.forget">
+                    <div class="login">{{ data.mainTitle }}</div>
                     <div class="register" @click="toggle">
-                        {{ subTitle }}
+                        {{ data.subTitle }}
                     </div>
                 </div>
-                <div class="forget" v-if="forget">
+                <div class="forget" v-if="data.forget">
                     <div class="content-header">
                         <div class="login">忘记密码</div>
                     </div>
@@ -29,8 +29,8 @@
                     >
                 </div>
 
-                <div class="err-info" :class="isError ? 'error-show' : ''">
-                    {{ errorInfo }}
+                <div class="err-info" :class="data.isError ? 'error-show' : ''">
+                    {{ data.errorInfo }}
                 </div>
                 <div class="substance">
                     <router-view></router-view>
@@ -42,20 +42,23 @@
         </div>
     </div>
 </template>
-<script>
-import { defineComponent, reactive, watchEffect } from "vue";
-import { useRouter, useRoute } from "vue-router";
+<script lang="ts">
+import Bus from '../../events/bus'
 import Carousel from "./components/Carousel";
 
+import { toRefs,defineComponent, onMounted, onUnmounted, reactive, watchEffect } from "vue";
+import { useRouter, useRoute,Router,RouteLocationNormalizedLoaded } from "vue-router";
+
 export default defineComponent({
+    name: 'account',
     components: {
         Carousel
     },
     setup() {
-        const router = useRouter();
-        const route = useRoute();
+        const router: Router = useRouter();
+        const route: RouteLocationNormalizedLoaded = useRoute();
 
-        const data = reactive({
+        const state = reactive({
             toggleClass: false,
             isError: false,
             showError: "",
@@ -68,37 +71,44 @@ export default defineComponent({
         });
 
         function toggle() {
-            router.push(data.toPath);
+            router.push(state.toPath);
         }
-        function showErrorInfo(info) {
-            data.isError = true;
-            data.errorInfo = info;
+        function showErrorInfo(info: string) {
+            state.isError = true;
+            state.errorInfo = info;
             setTimeout(() => {
-                data.isError = false;
+                state.isError = false;
             }, 1000);
         }
         watchEffect(() => {
             const path = route.path;
 
             if (path.indexOf("login") !== -1) {
-                data.mainTitle = "登录";
-                data.subTitle = "注册";
-                data.toPath = "/account/register";
-                data.forget = false;
+                state.mainTitle = "登录";
+                state.subTitle = "注册";
+                state.toPath = "/account/register";
+                state.forget = false;
             } else if (path.indexOf("register") !== -1) {
-                data.mainTitle = "注册";
-                data.subTitle = "登录";
-                data.toPath = "/account/login";
-                data.forget = false;
+                state.mainTitle = "注册";
+                state.subTitle = "登录";
+                state.toPath = "/account/login";
+                state.forget = false;
             } else if (path.indexOf("forget") !== -1) {
-                data.forget = true;
+                state.forget = true;
             }
         });
+        onMounted(()=>{
+            Bus.on('showError',(msg: string)=> {
+                showErrorInfo(msg)
+            })
+        })
+        onUnmounted(()=> {
+            Bus.off('showError',()=>({}))
+        })
 
         return {
-            data,
-            toggle,
-            showErrorInfo
+            ...toRefs(state),
+            toggle
         };
     }
 });
@@ -180,164 +190,164 @@ export default defineComponent({
             }
         }
     }
-}
 
-.icon.back {
-    width: 10px;
-    height: 10px;
-    display: block;
-    background: url(https://static.ledouya.com/FjALv90NOH8bngQvkR37se6DDu4q)
-        no-repeat;
-}
-.forget .goback:hover .back {
-    background: url(https://static.ledouya.com/Fr5rH308tBonyGrpxY8lR-UUO428)
-        no-repeat;
-}
-
-.content-header .login {
-    font-size: 24px;
-    color: #3794ff;
-    border-bottom: 2px solid #3794ff;
-    padding-bottom: 5px;
-}
-
-.content-header .register {
-    font-size: 18px;
-    color: #aaa;
-    padding-bottom: 5px;
-}
-
-/*下划线*/
-.under-line {
-    margin-top: 5px;
-    width: 48px;
-    height: 2px;
-    background: #3794ff;
-}
-
-.under-line:hover {
-    animation: under-change 1.5s linear;
-}
-
-/*下划线动画*/
-@keyframes under-change {
-    to,
-    from {
-        width: 48px;
+    .icon.back {
+        width: 10px;
+        height: 10px;
+        display: block;
+        background: url(https://static.ledouya.com/FjALv90NOH8bngQvkR37se6DDu4q)
+            no-repeat;
     }
-    50% {
-        width: 0;
-    }
-}
-
-.substance {
-    /*border: 1px solid red;*/
-    height: 495px;
-    position: relative;
-}
-
-/*环形动画*/
-.path1 {
-    width: 620px;
-    height: 620px;
-    border-radius: 50%;
-    text-align: center;
-}
-.path1 .item1 {
-    width: 32px;
-    height: 32px;
-    box-sizing: border-box;
-    background: #fff;
-    border: 10px solid #ffdb8d;
-    border-radius: 50%;
-    animation: spin 15s infinite linear;
-    transform-origin: 50% 310px;
-    display: inline-block;
-}
-.border1 {
-    width: 584px;
-    height: 584px;
-    border-radius: 50%;
-    border: 2px solid #eee;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-50%);
-    z-index: -1;
-}
-.path2 {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-50%);
-    width: 410px;
-    height: 410px;
-    border-radius: 50%;
-    text-align: center;
-}
-.path2 .item2 {
-    width: 28px;
-    height: 28px;
-    background: #fff;
-    border: 8px solid #8dc2ff;
-    box-sizing: border-box;
-    border-radius: 50%;
-    animation: spin 12s infinite linear;
-    transform-origin: 50% 205px;
-    display: inline-block;
-}
-.border2 {
-    width: 380px;
-    height: 380px;
-    border-radius: 50%;
-    border: 2px solid #eee;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-50%);
-    z-index: -1;
-}
-@keyframes spin {
-    to {
-        transform: rotate(1turn);
-    }
-}
-
-/*小屏优化*/
-@media only screen and (max-width: 1500px) {
-    .main .container {
-        width: 884px;
-        height: 440px;
-    }
-
-    .main .content .left {
-        width: 370px;
-        padding: 17px 39px;
-    }
-
-    .main .content .right {
-        width: 514px;
-    }
-
-    .substance {
-        height: 375px;
+    .forget .goback:hover .back {
+        background: url(https://static.ledouya.com/Fr5rH308tBonyGrpxY8lR-UUO428)
+            no-repeat;
     }
 
     .content-header .login {
-        font-size: 22px;
+        font-size: 24px;
+        color: #3794ff;
+        border-bottom: 2px solid #3794ff;
+        padding-bottom: 5px;
     }
 
     .content-header .register {
-        font-size: 16px;
+        font-size: 18px;
+        color: #aaa;
+        padding-bottom: 5px;
     }
 
-    .main .content .left .err-info {
-        top: 50px;
-        font-size: 12px;
+    /*下划线*/
+    .under-line {
+        margin-top: 5px;
+        width: 48px;
+        height: 2px;
+        background: #3794ff;
     }
 
-    .forget {
-        width: 281px;
+    .under-line:hover {
+        animation: under-change 1.5s linear;
+    }
+
+    /*下划线动画*/
+    @keyframes under-change {
+        to,
+        from {
+            width: 48px;
+        }
+        50% {
+            width: 0;
+        }
+    }
+
+    .substance {
+        /*border: 1px solid red;*/
+        height: 495px;
+        position: relative;
+    }
+
+    /*环形动画*/
+    .path1 {
+        width: 620px;
+        height: 620px;
+        border-radius: 50%;
+        text-align: center;
+    }
+    .path1 .item1 {
+        width: 32px;
+        height: 32px;
+        box-sizing: border-box;
+        background: #fff;
+        border: 10px solid #ffdb8d;
+        border-radius: 50%;
+        animation: spin 15s infinite linear;
+        transform-origin: 50% 310px;
+        display: inline-block;
+    }
+    .border1 {
+        width: 584px;
+        height: 584px;
+        border-radius: 50%;
+        border: 2px solid #eee;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-50%);
+        z-index: -1;
+    }
+    .path2 {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-50%);
+        width: 410px;
+        height: 410px;
+        border-radius: 50%;
+        text-align: center;
+    }
+    .path2 .item2 {
+        width: 28px;
+        height: 28px;
+        background: #fff;
+        border: 8px solid #8dc2ff;
+        box-sizing: border-box;
+        border-radius: 50%;
+        animation: spin 12s infinite linear;
+        transform-origin: 50% 205px;
+        display: inline-block;
+    }
+    .border2 {
+        width: 380px;
+        height: 380px;
+        border-radius: 50%;
+        border: 2px solid #eee;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-50%);
+        z-index: -1;
+    }
+    @keyframes spin {
+        to {
+            transform: rotate(1turn);
+        }
+    }
+
+    /*小屏优化*/
+    @media only screen and (max-width: 1500px) {
+        .account-box {
+            width: 884px;
+            height: 440px;
+        }
+
+        .left {
+            width: 370px;
+            padding: 17px 39px;
+        }
+
+        .right {
+            width: 514px;
+        }
+
+        .substance {
+            height: 375px;
+        }
+
+        .content-header .login {
+            font-size: 22px;
+        }
+
+        .content-header .register {
+            font-size: 16px;
+        }
+
+        .left .err-info {
+            top: 50px;
+            font-size: 12px;
+        }
+
+        .forget {
+            width: 281px;
+        }
     }
 }
 </style>

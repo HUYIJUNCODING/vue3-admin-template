@@ -12,25 +12,25 @@ const routes = [
             }
         ]
     },
-    // {
-    //     path: "/account",
-    //     name: "account",
-    //     component: () => import("../views/account/Index.vue"),
-    //     children: [
-    //         {
-    //             path: "login",
-    //             component: () => import("../views/account/Login.vue")
-    //         },
-    //         {
-    //             path: "register",
-    //             component: () => import("../views/account/Register.vue")
-    //         },
-    //         {
-    //             path: "forget",
-    //             component: () => import("../views/account/Forget.vue")
-    //         }
-    //     ]
-    // },
+    {
+        path: "/account",
+        name: "account",
+        component: () => import("../views/account/Index.vue"),
+        children: [
+            {
+                path: "login",
+                component: () => import("../views/account/Login.vue")
+            },
+            {
+                path: "register",
+                component: () => import("../views/account/Register.vue")
+            },
+            {
+                path: "forget",
+                component: () => import("../views/account/Forget.vue")
+            }
+        ]
+    },
     {
         path: "/order",
         name: "order",

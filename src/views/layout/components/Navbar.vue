@@ -52,18 +52,19 @@
     </div>
 </template>
 <script lang="ts">
+import { defineComponent } from "vue";
 import { RouteLocationNormalized } from "vue-router";
 import { RouteMenuType } from "@/router/AppRouters";
 
-export default {
+export default defineComponent({
     data() {
         return {
             baseUrl: "",
             currentUrl: "",
             pathArr: [],
             siteTitle: "大王叫我来巡山", //店铺名称
-            breadcrumbData: null,
-            thirdRouteData: null
+            breadcrumbData: {},
+            thirdRouteData: []
         };
     },
     computed: {},
@@ -118,7 +119,7 @@ export default {
         this.updateMenu();
         this.toggleRouter(this.$route);
     }
-};
+});
 </script>
 
 <style lang="scss" scoped>
