@@ -2,8 +2,17 @@
     <router-view />
 </template>
 
+<script lang="ts">
+import { defineComponent } from "vue";
+export default defineComponent({
+
+    beforeMount() {
+        this.$store.commit("checkRole");  
+    }
+});
+</script>
 <style lang="scss">
-@import '~@/styles/common/iconfont/iconfont.css';
+@import "~@/styles/common/iconfont/iconfont.css";
 #app {
     width: 100%;
     height: 100%;
@@ -14,5 +23,4 @@
     color: $default-color;
     background-color: $page-bg;
 }
-
 </style>

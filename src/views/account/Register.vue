@@ -157,7 +157,6 @@ import {
     toRefs,
     defineComponent,
     reactive,
-    watchEffect,
     onBeforeMount
 } from "vue";
 import { useRouter, Router } from "vue-router";
@@ -196,7 +195,7 @@ export default defineComponent({
         });
         /*二级联动选择地区*/
         function getProv(): void {
-            let tempCity: Array<{ label: string; value: string }>;
+            const tempCity = [];
 
             for (const val of state.citys) {
                 tempCity.push({ label: val.name, value: val.name });
@@ -206,7 +205,7 @@ export default defineComponent({
         function changeProv(e: string): void {
             state.selectCity = "";
             state.selectCon = "";
-            let cityList: Array<{ label: string; value: string }>;
+            const cityList = [];
 
             for (const val of state.citys) {
                 if (val.name === e) {
@@ -242,7 +241,7 @@ export default defineComponent({
         //验证姓名
         function checkTruename(): boolean {
             if (!state.res.truename) {
-                Bus.$emit("showError", "姓名不能为空");
+                Bus.emit("showError", "姓名不能为空");
                 state.error.truename = true;
                 return false;
             } else {
@@ -263,7 +262,7 @@ export default defineComponent({
                 state.error.phone = false;
                 return true;
             } else {
-                Bus.$emit("showError", "手机号格式错误");
+                Bus.emit("showError", "手机号格式错误");
                 state.error.phone = true;
                 return false;
             }
@@ -278,7 +277,7 @@ export default defineComponent({
                 state.error.password = false;
                 return true;
             } else {
-                Bus.$emit("showError", "请设置6-16位密码");
+                Bus.emit("showError", "请设置6-16位密码");
                 state.error.password = true;
                 return false;
             }
@@ -293,7 +292,7 @@ export default defineComponent({
             }
             if (checkPassWord) {
                 if (state.res.password != state.res.passwordOnce) {
-                    Bus.$emit("showError", "两次输入密码不一致");
+                    Bus.emit("showError", "两次输入密码不一致");
                     state.error.passwordOnce = true;
                     return false;
                 } else {
@@ -320,7 +319,7 @@ export default defineComponent({
             //     phone: state.res.phone
             // };
 
-            let time = 180;
+            let time = 60;
             function countDown() {
                 const timers: NodeJS.Timeout = setTimeout(() => {
                     clearInterval(timers);
@@ -350,12 +349,12 @@ export default defineComponent({
             if (checkPhone() && checkPassWord()) {
                 //判断是否勾选偶同意按钮
                 if (!state.isAgree) {
-                    Bus.$emit("showError", "请勾选并同意相关服务协议");
+                    Bus.emit("showError", "请勾选并同意相关服务协议");
                     return;
                 }
 
                 if (!state.selectProv) {
-                    Bus.$emit("showError", "请选择省市区");
+                    Bus.emit("showError", "请选择省市区");
                     return;
                 }
 
@@ -377,7 +376,7 @@ export default defineComponent({
                 //     }
 
                 //     if (res.error == -1) {
-                //         Bus.$emit("showError", res.error_reason);
+                //         Bus.emit("showError", res.error_reason);
                 //         return;
                 //     }
 
@@ -389,7 +388,7 @@ export default defineComponent({
             }
         }
         onBeforeMount(() => {
-            state.citys = citys;
+            state.citys = citys as [];
             getProv();
         });
 

@@ -14,9 +14,7 @@
     "js-cookie": "^2.2.1",
     "mitt": "^2.1.0",
     "nprogress": "^0.2.0",
-    "swiper": "^6.4.14",
     "vue": "^3.0.0",
-    "vue-awesome-swiper": "^4.1.1",
     "vue-router": "^4.0.0-0",
     "vuex": "^4.0.0-0"
   },

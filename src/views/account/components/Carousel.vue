@@ -1,23 +1,17 @@
 <template>
     <div class="swiper">
-        <swiper :options="swiperOption">
-            <swiper-slide v-for="(item, index) in imgs" :key="index">
+        <el-carousel interval="5000" indicator-position="none" arrow="never" height="600px">
+            <el-carousel-item v-for="(item, index) in imgs" :key="index">
                 <img :src="item" alt="" />
-            </swiper-slide>
-        </swiper>
+            </el-carousel-item>
+        </el-carousel>
     </div>
 </template>
 <script lang="ts">
-import "swiper/swiper-bundle.css";
-import { Swiper, SwiperSlide } from "vue-awesome-swiper";
 
 import { defineComponent, reactive, toRefs } from "vue";
 export default defineComponent({
-    name: 'carousel',
-    components: {
-        Swiper,
-        SwiperSlide
-    },
+    name: "carousel",
     setup() {
         const state = reactive({
             swiperOption: {
@@ -44,5 +38,9 @@ export default defineComponent({
 });
 </script>
 <style lang="scss" scoped>
-
+    img {
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    }
 </style>

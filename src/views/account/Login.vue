@@ -48,12 +48,16 @@
 import { defineComponent, reactive, toRefs } from "vue";
 import { ElLoading } from "element-plus";
 import Bus from "../../events/bus";
-import { setUserToken, setUserInfo } from "../../utils/cookie";
-import { useRouter,Router } from "vue-router";
+import { setUserToken, setUserInfo, setUserRole } from "../../utils/cookie";
+import { useRouter, Router } from "vue-router";
+import { useStore } from "../../store";
+import { Store } from "vuex";
+import { State } from "@/store";
 export default defineComponent({
     name: "login",
     setup() {
         const router: Router = useRouter();
+        const store: Store<State> = useStore();
         const state = reactive({
             login: {
                 phone: "",
@@ -77,7 +81,7 @@ export default defineComponent({
             const phone: string = state.login.phone;
 
             if (!phone) {
-                Bus.$emit("showError", "请输入账号");
+                Bus.emit("showError", "请输入账号");
                 state.error.phone = true;
                 return false;
             }
@@ -86,7 +90,7 @@ export default defineComponent({
                 state.error.phone = false;
                 return true;
             } else {
-                Bus.$emit("showError", "手机号格式错误");
+                Bus.emit("showError", "手机号格式错误");
                 state.error.phone = true;
                 return false;
             }
@@ -101,7 +105,7 @@ export default defineComponent({
                 state.error.password = false;
                 return true;
             } else {
-                Bus.$emit("showError", "请输入6-24位密码");
+                Bus.emit("showError", "请输入6-24位密码");
                 state.error.password = true;
                 return false;
             }
@@ -122,12 +126,14 @@ export default defineComponent({
                 setTimeout(() => {
                     loadingInstance.close();
 
+                    setUserRole(["master"]);
                     setUserToken("123456abc");
                     setUserInfo({
                         name: "悠然",
                         nickname: "悠然"
                     });
-
+                    console.log(store, "store");
+                    store.commit("checkRole");
                     //跳转到首页
                     router.push("/index");
                 }, 1000);

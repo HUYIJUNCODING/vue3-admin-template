@@ -106,8 +106,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { getUserInfo } from "../../../utils/cookie";
 import { RoutesType, RouteMenuType } from "@/router/AppRouters";
+import { defineComponent } from "vue";
 
 export default defineComponent({
     data() {
@@ -220,8 +221,10 @@ export default defineComponent({
         handleCommand(event: string) {
             switch (event) {
                 case "modify":
+                    this.$router.replace('/account/forget')
                     break;
                 case "logout":
+                     this.$router.replace('/account/login')
                     break;
                 default:
                     break;
@@ -229,7 +232,7 @@ export default defineComponent({
         }
     },
     mounted() {
-        // console.log(store.state.domainURL);
+       this.username = getUserInfo().name || 'test'
     },
     created() {
         this.updateMenu();

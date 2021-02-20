@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 //类型声明
-import { InjectionKey } from 'vue'
+import { InjectionKey } from "vue";
 import { RoutesType } from "../router/AppRouters";
 
 // define your typings for the store state
@@ -9,10 +9,14 @@ export interface State {
     [index: string]: any;
 }
 
-
-import { createStore, createLogger, useStore as baseUseStore,Store } from 'vuex'
-
+import {
+    createStore,
+    createLogger,
+    useStore as baseUseStore,
+    Store
+} from "vuex";
 import { filterRouter } from "../utils/assist";
+import { getUserRole } from "../utils/cookie";
 
 import {
     firstRouters,
@@ -34,18 +38,18 @@ const store: Store<State> = createStore<State>({
     },
     getters: {
         firstRouters(state: State): RoutesType {
-            return state.firstRouters
+            return state.firstRouters;
         },
         secondRouters(state: State): RoutesType {
-            return state.secondRouters
+            return state.secondRouters;
         },
         thirdRouters(state: State): RoutesType {
-            return state.thirdRouters
+            return state.thirdRouters;
         }
     },
     mutations: {
         checkRole(state: State): void {
-            const role = ["master"];
+            const role: string[] = getUserRole() || ["master"];
 
             if (role) {
                 const arrRouters: { [index: string]: RoutesType } = {
@@ -61,11 +65,11 @@ const store: Store<State> = createStore<State>({
     },
     actions: {},
     modules: {},
-    plugins:  process.env.NODE_ENV !== 'production' ? [createLogger()]: []
+    plugins: process.env.NODE_ENV !== "production" ? [createLogger()] : []
 });
 
-export function useStore () {
-    return baseUseStore(key)
-  }
+export function useStore(): Store<State>  {
+    return baseUseStore(key);
+}
 
 export default store;
