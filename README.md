@@ -10,6 +10,7 @@ npm run serve
 ```
 
 ## 部分截图
-!()['']
+!(登录页)['https://github.com/HUYIJUNCODING/vue3-admin-template/blob/main/src/assets/login.png']
+
 
 
