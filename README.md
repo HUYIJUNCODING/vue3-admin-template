@@ -1,24 +1,15 @@
 # vue3-admin-template
 
-## Project setup
+## 一个 vue3 + ts 后台管理系统模板
+
+## Project runner
 ```
 npm install
-```
 
-### Compiles and hot-reloads for development
-```
 npm run serve
 ```
 
-### Compiles and minifies for production
-```
-npm run build
-```
+## 部分截图
+!()['']
 
-### Lints and fixes files
-```
-npm run lint
-```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
